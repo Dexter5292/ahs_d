@@ -1,0 +1,69 @@
+unit ahs_d_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, StdCtrls, pngimage, DB, ADODB, mainMenu_u;
+
+type
+  TfrmLogin = class(TForm)
+    imgLogo: TImage;
+    edtUsername: TEdit;
+    edtPassword: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    pnlLogin: TPanel;
+    adoCon: TADOConnection;
+    adoQ: TADOQuery;
+    pnlClose: TPanel;
+    procedure pnlLoginClick(Sender: TObject);
+    procedure pnlCloseClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLogin: TfrmLogin;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmLogin.pnlCloseClick(Sender: TObject);
+begin
+ frmLogin.Close;
+end;
+
+procedure TfrmLogin.pnlLoginClick(Sender: TObject);
+begin
+  adoCon.ConnectionString := 'Provider=MicroSoft.Jet.OLEDB.4.0; Data Source='
+                          + ExtractFilePath(Application.ExeName)
+                          + 'maindb.mdb; Persist Security Info=False';
+  adoCon.LoginPrompt := FALSE;
+  adoQ.Connection := adoCon;
+
+  //Check login details
+
+  adoQ.SQL.Clear;
+  adoQ.SQL.Add('SELECT * FROM Users');
+  adoQ.Open;
+
+  try
+    if (adoQ.Locate('Username', edtUsername.Text, [])) AND (adoQ.Locate('Password',
+    edtPassword.Text, [])) then
+    begin
+      ShowMessage('User Logged In');
+      frmMain.Show;
+      adoQ.Close;
+      adoCon.Close;
+    end;
+  except
+    ShowMessage('User Not Found');
+  end;
+
+end;
+
+end.

@@ -1,0 +1,276 @@
+unit loadNew_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, StdCtrls, ComCtrls, Spin, DB, ADODB;
+
+type
+  TfrmLoadNew = class(TForm)
+    Panel1: TPanel;
+    GroupBox1: TGroupBox;
+    Label1: TLabel;
+    sedGrade: TSpinEdit;
+    Label2: TLabel;
+    edtEducator: TEdit;
+    Label3: TLabel;
+    dtpdate: TDateTimePicker;
+    Label4: TLabel;
+    cbLearner: TComboBox;
+    GroupBox2: TGroupBox;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    cbMisconduct: TComboBox;
+    rbA: TRadioButton;
+    rbB: TRadioButton;
+    redRemarks: TRichEdit;
+    btnLoad: TButton;
+    btnClose: TButton;
+    adoConNew: TADOConnection;
+    adoQNew: TADOQuery;
+    pnlSchedule: TPanel;
+    dtpSchedule: TDateTimePicker;
+    btnSchedule: TButton;
+    Label8: TLabel;
+    procedure btnCloseClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure rbAClick(Sender: TObject);
+    procedure rbBClick(Sender: TObject);
+    procedure sedGradeChange(Sender: TObject);
+    procedure btnLoadClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLoadNew: TfrmLoadNew;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmLoadNew.btnCloseClick(Sender: TObject);
+begin
+frmLoadNew.Close;
+end;
+
+procedure TfrmLoadNew.btnLoadClick(Sender: TObject);
+var
+vCurLearner, vDebit, lName,lGrade,Educator,Transgression,Remark, Con : String;
+I, curDebits, nDebits, toMessage, x, buttonSelected  : Integer;
+lDate : TDate;
+begin
+  vCurLearner := '';
+  vDebit := '';
+  curDebits := 0;
+  for I := Length(cbLearner.Text) - 5 to Length(cbLearner.Text) - 1 do
+    begin
+      vCurlearner := vCurLearner + cbLearner.Text[I];
+    end;
+  for I := Length(cbMisconduct.Text) - 2 to Length(cbMisconduct.Text) - 1 do
+    begin
+      vDebit := vDebit + cbMisconduct.Text[I];
+    end;
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('SELECT * FROM [Learner Information]');
+  adoQNew.SQL.Add('WHERE [Accession Number] = ''' + vCurLearner + '''');
+  adoQNew.Open;
+  lName := adoQNew['Learner Firstname'] + ' ' + adoQNew['Learner Surname'];
+  lGrade := adoQNew['Grade'];
+  lDate := Trunc(dtpDate.Date);
+  Educator :=  edtEducator.Text;
+  Transgression := cbMisconduct.Text;
+  Remark := redRemarks.Lines.GetText;
+  curDebits := StrToInt(adoQNew['Debits']);
+  nDebits := curDebits + StrToInt(vDebit);
+  toMessage := nDebits;
+  if (toMessage > 50) and (toMessage < 101) then
+  begin
+    buttonSelected := messagedlg('Student must see Grade Committee. (' + IntToStr(toMessage) + ' debits). Schedule?', mtInformation, [mbYes,mbNo],0);
+    if (buttonSelected = mrYes) then
+      begin
+        pnlSchedule.Visible := True;
+      end;
+  end
+  else if (toMessage > 100) AND (toMessage < 150) then
+  begin
+    buttonSelected := messagedlg('Student must see Management Team. (' + IntToStr(toMessage) + ' debits). Schedule?', mtInformation, [mbYes,mbNo],0);
+    if (buttonSelected = mrYes) then
+      begin
+        pnlSchedule.Visible := True;
+      end;
+  end
+  else if (toMessage >= 150) then
+  begin
+    buttonSelected := messagedlg('Student must see Governing Body. (' + IntToStr(toMessage) + ' debits). Schedule?', mtInformation, [mbYes,mbNo],0);
+    if (buttonSelected = mrYes) then
+      begin
+        pnlSchedule.Visible := True;
+      end;
+  end
+  else
+  begin
+    showMessage('Error: Message Dialog did not open. Please contact Administrator');
+  end;
+  adoQNew.Close;
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('UPDATE [Learner Information]');
+  adoQNew.SQL.Add('SET Debits = ' + IntToStr(nDebits));
+  adoQNew.SQL.Add('WHERE [Accession Number] = ''' + vCurLearner + '''');
+  adoQNew.ExecSQL;
+  adoQNew.SQL.Clear;
+  adoQnew.SQL.Add('Select * FROM [Learner Information]');
+  adoQNew.SQL.Add('WHERE [Accession Number] = ''' + vCurLearner + '''');
+  adoQNew.Open;
+  if NOT (buttonSelected = mrYes) then
+  begin
+  ShowMessage(adoQNew['Learner Firstname'] + ' has a new debit total of '
+  + FloatToStr(adoQNew['Debits']));
+  end;
+  adoQNew.Close;
+  adoQNew.SQL.Clear;
+  x := nDebits;
+  adoQNew.SQL.Add('INSERT INTO [Disciplinary History](Learner, LoadingDate,'
+  + 'Educator, [Transgression Type], Remarks, [Debit Total])');
+  adoQNew.SQL.Add('VALUES(''' + lname + ''',#' + DateTimeToStr(lDate) + '#,'''
+  + Educator + ''',''' + Transgression + ''',''' + Remark + ''','
+  + IntToStr(x) + ')');
+  adoQNew.ExecSQL;
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Text := 'SELECT * FROM [Disciplinary History]';
+  adoQNew.Open;
+end;
+
+procedure TfrmLoadNew.FormCreate(Sender: TObject);
+var
+I : Integer;
+begin
+  adoConNew.ConnectionString :='Provider=MicroSoft.Jet.OLEDB.4.0; Data Source='
+                              + ExtractFilePath(Application.ExeName)
+                              + 'Maindb.mdb; Persist Security Info=false';
+  adoConNew.LoginPrompt := FALSE;
+  adoQNew.Connection := adoConNew;
+
+  // Load Grade 8 Learner List Default
+
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('SELECT [Learner Surname], [Learner Firstname], [Accession Number]');
+  adoQNew.SQL.Add(' FROM [Learner Information]');
+  adoQNew.SQL.Add('WHERE [Grade] = ''08''');
+  adoQNew.Open;
+
+  // Populate comboBox  cbLearner
+
+  for I := 0 to adoQNew.RecordCount - 1 do
+    begin
+      cbLearner.Items.Add(adoQNew['Learner Surname'] + ' '
+                          + adoQNew['Learner Firstname']
+                          + '(' + adoQNew['Accession Number'] + ')');
+      adoQNew.Next;
+    end;
+  //Load Default value;
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('SELECT [Discription], [Debits], [Category] FROM [Misconduct]');
+  adoQNew.SQL.Add('WHERE [Category] = ''A''');
+  adoQNew.Open;
+
+  for I := 0 to adoQNew.RecordCount - 1 do
+    begin
+      cbMisconduct.Items.Add(adoQNew['Discription'] + ' (' + FloatToStr(adoQNew['Debits'])
+      + ')');
+      adoQNew.Next;
+    end;
+
+  // Populate comboBox cbMisconduct onClick for Radio Buttons
+
+end;
+
+procedure TfrmLoadNew.rbAClick(Sender: TObject);
+var
+I : Integer;
+begin
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('SELECT [Discription], [Debits], [Category] FROM [Misconduct]');
+  if rbB.Checked then
+  begin
+    adoQNew.SQL.Add('WHERE [Category] = ''B''');
+  end
+  else
+  begin
+  adoQNew.SQL.Add('WHERE [Category] = ''A''');
+  end;
+  adoQNew.Open;
+  cbMisconduct.Items.Clear;
+  for I := 0 to adoQNew.RecordCount - 1 do
+    begin
+      cbMisconduct.Items.Add(adoQNew['Discription'] + ' (' + FloatToStr(adoQNew['Debits'])
+      + ')');
+      adoQNew.Next;
+    end;
+end;
+
+procedure TfrmLoadNew.rbBClick(Sender: TObject);
+var
+I : Integer;
+begin
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('SELECT [Discription], [Debits], [Category] FROM [Misconduct]');
+  if rbB.Checked then
+  begin
+    adoQNew.SQL.Add('WHERE [Category] = ''B''');
+  end
+  else
+  begin
+  adoQNew.SQL.Add('WHERE [Category] = ''A''');
+  end;
+  adoQNew.Open;
+  cbMisconduct.Items.Clear;
+  for I := 0 to adoQNew.RecordCount - 1 do
+    begin
+      cbMisconduct.Items.Add(adoQNew['Discription'] + ' (' + FloatToStr(adoQNew['Debits'])
+      + ')');
+      adoQNew.Next;
+    end;
+end;
+
+procedure TfrmLoadNew.sedGradeChange(Sender: TObject);
+var
+vGrade : String;
+I      : Integer;
+begin
+  if sedGrade.Text = '8' then
+  begin
+    vGrade := '08';
+  end;
+  if sedGrade.Text = '9' then
+  begin
+    vGrade := '09';
+  end;
+  if (sedGrade.Text = '10') OR (sedGrade.Text = '11') OR (sedGrade.Text = '12')  then
+  begin
+    vGrade := sedGrade.Text;
+  end;
+
+  // Apply grade to learner list in cbLearners
+
+  cbLearner.Items.Clear;
+
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('SELECT [Learner Surname], [Learner Firstname], [Accession Number] FROM [Learner Information]');
+  adoQNew.SQL.Add('WHERE Grade = ''' + vGrade + '''');
+  adoQNew.Open;
+
+  for I := 0 to adoQNew.RecordCount - 1 do
+    begin
+      cbLearner.Items.Add(adoQNew['Learner Surname'] + ' '
+      + adoQNew['Learner Firstname']
+      + '(' + adoQNew['Accession Number'] + ')');
+      adoQNew.Next;
+    end;
+end;
+
+end.

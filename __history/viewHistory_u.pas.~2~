@@ -1,0 +1,48 @@
+unit viewHistory_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, Grids, DBGrids, DB, ADODB;
+
+type
+  TfrmHistory = class(TForm)
+    adoHistCon: TADOConnection;
+    adoQH: TADOQuery;
+    dsSource2: TDataSource;
+    histgrid: TDBGrid;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Label1: TLabel;
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmHistory: TfrmHistory;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmHistory.FormCreate(Sender: TObject);
+begin
+adoHistCon.ConnectionString := 'Provider=MicroSoft.Jet.OLEDB.4.0; Data Source='
+                                + ExtractFilePath(Application.ExeName)
+                                + 'maindb.mdb; Persist Security info=false';
+adoHistCon.LoginPrompt := False;
+adoQH.Connection := adoHistCon;
+adoQH.SQL.Clear;
+adoQH.SQL.Add('SELECT * FROM [Disciplinary History]');
+adoQH.Open;
+dsSource2.DataSet := adoQH;
+histgrid.DataSource := dsSource2;
+adoQH.Active := True;
+
+end;
+
+end.

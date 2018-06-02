@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2018/05/27 19:55:56.348.pas,C:\Users\Martin\Documents\RAD Studio\Projects\Unit2.pas=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\ahs_d_u.pas</Transaction>
+    <Transaction>2018/05/27 19:55:56.348.dfm,C:\Users\Martin\Documents\RAD Studio\Projects\Unit2.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\ahs_d_u.dfm</Transaction>
+    <Transaction>2018/05/27 19:56:01.672.dproj,C:\Users\Martin\Documents\RAD Studio\Projects\Project2.dproj=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\ahs_d_p.dproj</Transaction>
+    <Transaction>2018/05/27 20:05:20.209.pas,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.pas=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\mainMenu_u.pas</Transaction>
+    <Transaction>2018/05/27 20:05:20.209.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\mainMenu_u.dfm</Transaction>
+    <Transaction>2018/05/27 21:05:56.705.pas,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.pas=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\loadNew_u.pas</Transaction>
+    <Transaction>2018/05/27 21:05:56.705.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\loadNew_u.dfm</Transaction>
+    <Transaction>2018/06/02 18:15:05.506.pas,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.pas=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\viewHistory_u.pas</Transaction>
+    <Transaction>2018/06/02 18:15:05.506.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\viewHistory_u.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

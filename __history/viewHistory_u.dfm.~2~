@@ -1,0 +1,73 @@
+object frmHistory: TfrmHistory
+  Left = 0
+  Top = 0
+  Caption = 'Display debits history'
+  ClientHeight = 494
+  ClientWidth = 726
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object histgrid: TDBGrid
+    Left = 5
+    Top = 71
+    Width = 713
+    Height = 355
+    TabOrder = 0
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 729
+    Height = 65
+    Color = clWhite
+    ParentBackground = False
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 293
+      Top = 18
+      Width = 137
+      Height = 23
+      Caption = 'Debits History'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clTeal
+      Font.Height = -19
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 432
+    Width = 729
+    Height = 65
+    Color = clWhite
+    ParentBackground = False
+    TabOrder = 2
+  end
+  object adoHistCon: TADOConnection
+    Left = 8
+    Top = 8
+  end
+  object adoQH: TADOQuery
+    Parameters = <>
+    Left = 56
+    Top = 8
+  end
+  object dsSource2: TDataSource
+    Left = 96
+    Top = 8
+  end
+end
