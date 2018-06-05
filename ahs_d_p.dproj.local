@@ -10,5 +10,14 @@
     <Transaction>2018/05/27 21:05:56.705.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\loadNew_u.dfm</Transaction>
     <Transaction>2018/06/02 18:15:05.506.pas,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.pas=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\viewHistory_u.pas</Transaction>
     <Transaction>2018/06/02 18:15:05.506.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\viewHistory_u.dfm</Transaction>
-  </Transactions>
+  </Transactions>  <ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="ahs_d_u.pas"/>
+    <File Path="ahs_d_u.dfm"/>
+    <File Path="loadNew_u.pas"/>
+    <File Path="loadNew_u.dfm"/>
+    <File Path="mainMenu_u.pas"/>
+    <File Path="mainMenu_u.dfm"/>
+    <File Path="viewHistory_u.pas"/>
+    <File Path="viewHistory_u.dfm"/>
+  </ProjectSortOrder>
 </BorlandProject>
