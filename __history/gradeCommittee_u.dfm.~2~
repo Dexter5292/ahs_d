@@ -1,0 +1,75 @@
+object frmGradeCommittee: TfrmGradeCommittee
+  Left = 0
+  Top = 0
+  Caption = 'Grade Committee'
+  ClientHeight = 490
+  ClientWidth = 717
+  Color = clWhite
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = -12
+    Top = 0
+    Width = 729
+    Height = 65
+    Color = clWhite
+    ParentBackground = False
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 229
+      Top = 10
+      Width = 296
+      Height = 23
+      Caption = 'Grade Committee Management'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clTeal
+      Font.Height = -19
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label7: TLabel
+      Left = 221
+      Top = 39
+      Width = 324
+      Height = 13
+      Caption = 'Process and display the results of the Grade Committee meetings'
+    end
+  end
+  object GroupBox1: TGroupBox
+    Left = 8
+    Top = 80
+    Width = 233
+    Height = 402
+    Caption = 'Select Learners'
+    TabOrder = 1
+    object clbLearner: TCheckListBox
+      Left = 19
+      Top = 32
+      Width = 190
+      Height = 353
+      ItemHeight = 13
+      TabOrder = 0
+    end
+  end
+  object adoConGC: TADOConnection
+    Left = 8
+    Top = 8
+  end
+  object adoQGC: TADOQuery
+    Parameters = <>
+    Left = 48
+    Top = 8
+  end
+  object dsGC: TDataSource
+    Left = 88
+    Top = 8
+  end
+end

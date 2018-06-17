@@ -55,6 +55,18 @@
 			<DCCReference Include="viewHistory_u.pas">
 				<Form>frmHistory</Form>
 			</DCCReference>
+			<DCCReference Include="gradeCommittee_u.pas">
+				<Form>frmGradeCommittee</Form>
+			</DCCReference>
+			<DCCReference Include="select_print.pas">
+				<Form>sprint</Form>
+			</DCCReference>
+			<DCCReference Include="ManageDetention_u.pas">
+				<Form>frmMDetention</Form>
+			</DCCReference>
+			<DCCReference Include="select_student.pas">
+				<Form>Select_learner</Form>
+			</DCCReference>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

@@ -30,13 +30,19 @@ type
     btnClose: TButton;
     adoConNew: TADOConnection;
     adoQNew: TADOQuery;
+    pnlSchedule: TPanel;
+    dtpSchedule: TDateTimePicker;
+    btnSchedule: TButton;
+    Label8: TLabel;
     procedure btnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure rbAClick(Sender: TObject);
     procedure rbBClick(Sender: TObject);
     procedure sedGradeChange(Sender: TObject);
     procedure btnLoadClick(Sender: TObject);
+    procedure btnScheduleClick(Sender: TObject);
   private
+  hearing : Integer;
     { Private declarations }
   public
     { Public declarations }
@@ -53,13 +59,18 @@ procedure TfrmLoadNew.btnCloseClick(Sender: TObject);
 begin
 frmLoadNew.Close;
 end;
-
+{
+TODO:
+  - IF scheduled dates, load to database.
+  - Retrieve date from panel and change visibility
+}
 procedure TfrmLoadNew.btnLoadClick(Sender: TObject);
 var
-vCurLearner, vDebit, lName,lGrade,Educator,Transgression,Remark, Con : String;
-I, curDebits, nDebits, toMessage, x  : Integer;
+vCurLearner, vDebit, lName,lGrade,Educator,Transgression,Remark,hearing_level : String;
+I, curDebits, nDebits, toMessage, x, buttonSelected  : Integer;
 lDate : TDate;
 begin
+  buttonSelected := 0;
   vCurLearner := '';
   vDebit := '';
   curDebits := 0;
@@ -86,18 +97,34 @@ begin
   toMessage := nDebits;
   if (toMessage > 50) and (toMessage < 101) then
   begin
-    messagedlg('Student must see Grade Committee. (' + IntToStr(toMessage) + ' debits). Schedule?', mtInformation, [mbYes,mbNo],0);
+    buttonSelected := messagedlg('Student must see Grade Committee. (' + IntToStr(toMessage) + ' debits). Schedule?', mtInformation, [mbYes,mbNo],0);
+    if (buttonSelected = mrYes) then
+      begin
+        pnlSchedule.Visible := True;
+        hearing := 0;
+      end;
   end
   else if (toMessage > 100) AND (toMessage < 150) then
   begin
-    messagedlg('Student must see Management Team. (' + IntToStr(toMessage) + ' debits). Schedule?', mtInformation, [mbYes,mbNo],0);
+    buttonSelected := messagedlg('Student must see Management Team. (' + IntToStr(toMessage) + ' debits). Schedule?', mtInformation, [mbYes,mbNo],0);
+    if (buttonSelected = mrYes) then
+      begin
+        pnlSchedule.Visible := True;
+        hearing := 1;
+      end;
   end
   else if (toMessage >= 150) then
   begin
-    messagedlg('Student must see Governing Body. (' + IntToStr(toMessage) + ' debits). Schedule?', mtInformation, [mbYes,mbNo],0);
-  end;
+    buttonSelected := messagedlg('Student must see Governing Body. (' + IntToStr(toMessage) + ' debits). Schedule?', mtInformation, [mbYes,mbNo],0);
+    if (buttonSelected = mrYes) then
+      begin
+        pnlSchedule.Visible := True;
+        hearing := 2;
+      end;
+  end
+  else
   begin
-    showMessage('Something Else');
+    showMessage('Error: Message Dialog did not open. Please contact Administrator');
   end;
   adoQNew.Close;
   adoQNew.SQL.Clear;
@@ -109,20 +136,53 @@ begin
   adoQnew.SQL.Add('Select * FROM [Learner Information]');
   adoQNew.SQL.Add('WHERE [Accession Number] = ''' + vCurLearner + '''');
   adoQNew.Open;
+  if NOT (buttonSelected = mrYes) then
+  begin
   ShowMessage(adoQNew['Learner Firstname'] + ' has a new debit total of '
   + FloatToStr(adoQNew['Debits']));
+  end;
   adoQNew.Close;
   adoQNew.SQL.Clear;
   x := nDebits;
-  adoQNew.SQL.Add('INSERT INTO [Disciplinary History](Learner, LoadingDate,'
+  adoQNew.SQL.Add('INSERT INTO [Disciplinary History](Learner, Grade, LoadingDate,'
   + 'Educator, [Transgression Type], Remarks, [Debit Total])');
-  adoQNew.SQL.Add('VALUES(''' + lname + ''',#' + DateTimeToStr(lDate) + '#,'''
+  adoQNew.SQL.Add('VALUES(''' + lname + ''','''+ lGrade + ''',#' + DateTimeToStr(lDate) + '#,'''
   + Educator + ''',''' + Transgression + ''',''' + Remark + ''','
   + IntToStr(x) + ')');
   adoQNew.ExecSQL;
   adoQNew.SQL.Clear;
   adoQNew.SQL.Text := 'SELECT * FROM [Disciplinary History]';
   adoQNew.Open;
+end;
+
+procedure TfrmLoadNew.btnScheduleClick(Sender: TObject);
+var
+hearingDate   : Tdate;
+hearing_level : String;
+begin
+  hearingDate := Trunc(dtpSchedule.Date);
+  pnlSchedule.Visible := False;
+  if (hearing = 0) then
+  begin
+    hearing_level := 'Grade Committee';
+  end
+  else if (hearing = 1) then
+  begin
+    hearing_level := 'Management Team';
+  end
+  else
+  begin
+    hearing_level := 'Governing Body';
+  end;
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('INSERT INTO [' + hearing_level +'] (Learner, HearingDate)');
+  adoQNew.SQL.Add('VALUES (''' + cbLearner.Text + ''', #' + DateTimeToStr(hearingDate) + '# )');
+  adoQNew.ExecSQL;
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Text := 'SELECT * FROM [Grade Committee]';
+  adoQNew.Open;
+  ShowMessage('Hearing Scheduled for ' + DateTimeToStr(hearingDate) + ' for ' +
+  hearing_level);
 end;
 
 procedure TfrmLoadNew.FormCreate(Sender: TObject);

@@ -30,13 +30,21 @@ type
     btnClose: TButton;
     adoConNew: TADOConnection;
     adoQNew: TADOQuery;
+    pnlSchedule: TPanel;
+    dtpSchedule: TDateTimePicker;
+    btnSchedule: TButton;
+    Label8: TLabel;
+    Label9: TLabel;
+    escLevel: TComboBox;
     procedure btnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure rbAClick(Sender: TObject);
     procedure rbBClick(Sender: TObject);
     procedure sedGradeChange(Sender: TObject);
     procedure btnLoadClick(Sender: TObject);
+    procedure btnScheduleClick(Sender: TObject);
   private
+  hearing : Integer;
     { Private declarations }
   public
     { Public declarations }
@@ -53,13 +61,19 @@ procedure TfrmLoadNew.btnCloseClick(Sender: TObject);
 begin
 frmLoadNew.Close;
 end;
-
+{
+TODO:
+  - IF scheduled dates, load to database.
+  - Retrieve date from panel and change visibility
+}
 procedure TfrmLoadNew.btnLoadClick(Sender: TObject);
 var
-vCurLearner, vDebit, lName,lGrade,Educator,Transgression,Remark : String;
-I, curDebits, nDebits,x  : Integer;
+vCurLearner, vDebit, lName,lGrade,Educator,Transgression,Remark,hearing_level : String;
+escalations : Integer;
+I, curDebits, nDebits, toMessage, x, buttonSelected  : Integer;
 lDate : TDate;
 begin
+  buttonSelected := 0;
   vCurLearner := '';
   vDebit := '';
   curDebits := 0;
@@ -71,42 +85,146 @@ begin
     begin
       vDebit := vDebit + cbMisconduct.Text[I];
     end;
+
   adoQNew.SQL.Clear;
   adoQNew.SQL.Add('SELECT * FROM [Learner Information]');
   adoQNew.SQL.Add('WHERE [Accession Number] = ''' + vCurLearner + '''');
   adoQNew.Open;
+
   lName := adoQNew['Learner Firstname'] + ' ' + adoQNew['Learner Surname'];
   lGrade := adoQNew['Grade'];
+  escalations := adoQNew['Escalations'];
   lDate := Trunc(dtpDate.Date);
   Educator :=  edtEducator.Text;
   Transgression := cbMisconduct.Text;
   Remark := redRemarks.Lines.GetText;
   curDebits := StrToInt(adoQNew['Debits']);
   nDebits := curDebits + StrToInt(vDebit);
+  toMessage := nDebits;
+
+  {Initialize a counter to count the amount of times a learner is
+  escalated to the Grade committee. On 2 times, a choice between Management
+  and Governing body must be presented.}
+
+  if (toMessage > 50) then
+  begin
+    buttonSelected := messagedlg('Student must be escalated. (' + IntToStr(toMessage) + ' debits). Schedule?', mtInformation, [mbYes,mbNo],0);
+    if (buttonSelected = mrYes) then
+      begin
+        inc(escalations);
+        if (escalations > 2) then
+        begin
+          {Combobox for choice must appear, handler implemented}
+          adoQNew.SQL.Clear;
+          adoQNew.SQL.Add('UPDATE [Learner Information]');
+          adoQNew.SQL.Add('SET [Debits] = 0 AND [Escalations] = ' + IntToStr(escalations));
+          adoQNew.SQL.Add('WHERE [Accession Number] = ''' + vCurLearner + '''');
+          nDebits := 0;
+          adoQNew.ExecSQL;
+          adoQNew.SQL.Clear;
+          adoQNew.SQL.Add('SELECT * FROM [Learner Information]');
+          adoQNew.Open;
+          pnlSchedule.Visible := True;
+          escLevel.Visible := True;
+          Label9.Visible := True;
+         {handle event}
+  x := nDebits;
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('INSERT INTO [esc](Learner, Grade, LoadingDate,'
+                  + 'Educator, [Transgression Type], Remarks, [Debit Total])');
+  adoQNew.SQL.Add('VALUES(''' + lname + ''','''+ lGrade + ''',#' + DateTimeToStr(lDate) + '#,'''
+                  + Educator + ''',''' + Transgression + ''',''' + Remark + ''','
+                  + IntToStr(x) + ')');
+  adoQNew.ExecSQL;
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('SELECT [Learner] FROM [esc]');
+  adoQNew.Open;
+        end;
+        adoQNew.SQL.Clear;
+        adoQNew.SQL.Add('UPDATE [Learner Information]');
+        adoQNew.SQL.Add('SET [Escalations] = ' + IntToStr(escalations));
+        adoQNew.SQl.Add('WHERE [Accession Number] = ''' + vCurLearner + '''');
+        adoQNew.ExecSQL;
+        adoQNew.SQL.Clear;
+        adoQNew.SQL.Add('SELECT * FROM [Learner Information]');
+        adoQNew.Open;
+        pnlSchedule.Visible := True;
+        hearing := 0;
+        end;
+    end;
+    if NOT (buttonSelected = mrYes) then
+    begin
+      ShowMessage(adoQNew['Learner Firstname'] + ' has a new debit total of '
+      + FloatToStr(nDebits));
+    end;
+
   adoQNew.Close;
   adoQNew.SQL.Clear;
   adoQNew.SQL.Add('UPDATE [Learner Information]');
   adoQNew.SQL.Add('SET Debits = ' + IntToStr(nDebits));
   adoQNew.SQL.Add('WHERE [Accession Number] = ''' + vCurLearner + '''');
   adoQNew.ExecSQL;
+
   adoQNew.SQL.Clear;
   adoQnew.SQL.Add('Select * FROM [Learner Information]');
   adoQNew.SQL.Add('WHERE [Accession Number] = ''' + vCurLearner + '''');
   adoQNew.Open;
-  ShowMessage(adoQNew['Learner Firstname'] + ' has a new debit total of '
-  + FloatToStr(adoQNew['Debits']));
+
   adoQNew.Close;
   adoQNew.SQL.Clear;
   x := nDebits;
-  adoQNew.SQL.Add('INSERT INTO [Disciplinary History](Learner, LoadingDate,'
+
+  adoQNew.SQL.Add('INSERT INTO [Disciplinary History](Learner, Grade, LoadingDate,'
   + 'Educator, [Transgression Type], Remarks, [Debit Total])');
-  adoQNew.SQL.Add('VALUES(''' + lname + ''',#' + DateTimeToStr(lDate) + '#,'''
+  adoQNew.SQL.Add('VALUES(''' + lname + ''','''+ lGrade + ''',#' + DateTimeToStr(lDate) + '#,'''
   + Educator + ''',''' + Transgression + ''',''' + Remark + ''','
   + IntToStr(x) + ')');
   adoQNew.ExecSQL;
   adoQNew.SQL.Clear;
   adoQNew.SQL.Text := 'SELECT * FROM [Disciplinary History]';
   adoQNew.Open;
+end;
+
+procedure TfrmLoadNew.btnScheduleClick(Sender: TObject);
+var
+hearingDate   : Tdate;
+hearing_level : String;
+begin
+  hearingDate := Trunc(dtpSchedule.Date);
+  pnlSchedule.Visible := False;
+   if escLevel.ItemIndex = 0 then
+          begin
+            hearing := 0;
+          end
+          else if escLevel.ItemIndex = 1 then
+          begin
+            hearing := 1;
+          end
+          else
+          begin
+            hearing := 2;
+          end;
+  if (hearing = 0) then
+  begin
+    hearing_level := 'Grade Committee';
+  end
+  else if (hearing = 1) then
+  begin
+    hearing_level := 'Management Team';
+  end
+  else
+  begin
+    hearing_level := 'Governing Body';
+  end;
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Add('INSERT INTO [' + hearing_level +'] (Learner, HearingDate)');
+  adoQNew.SQL.Add('VALUES (''' + cbLearner.Text + ''', #' + DateTimeToStr(hearingDate) + '# )');
+  adoQNew.ExecSQL;
+  adoQNew.SQL.Clear;
+  adoQNew.SQL.Text := 'SELECT * FROM [Grade Committee]';
+  adoQNew.Open;
+  ShowMessage('Hearing Scheduled for ' + DateTimeToStr(hearingDate) + ' for ' +
+  hearing_level);
 end;
 
 procedure TfrmLoadNew.FormCreate(Sender: TObject);

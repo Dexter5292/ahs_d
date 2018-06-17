@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Grids, DBGrids, DB, ADODB, ComCtrls, Buttons;
+  Dialogs, StdCtrls, ExtCtrls, Grids, DBGrids, DB, ADODB, ComCtrls, Buttons,
+  ShellApi;
 
 type
   TfrmHistory = class(TForm)
@@ -33,6 +34,8 @@ type
     edtCrit: TEdit;
     rgField: TRadioGroup;
     Button2: TButton;
+    BitBtn2: TBitBtn;
+    BitBtn3: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure histgridCellClick(Column: TColumn);
@@ -41,6 +44,8 @@ type
     procedure Button2Click(Sender: TObject);
     function returnLow(S: String): String;
     function returnHigh(S : String): String;
+    procedure BitBtn2Click(Sender: TObject);
+    procedure BitBtn3Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -79,6 +84,65 @@ procedure TfrmHistory.BitBtn1Click(Sender: TObject);
 begin
 pnlSearch.Visible := True;
 edtCrit.SetFocus;
+end;
+
+procedure TfrmHistory.BitBtn2Click(Sender: TObject);
+begin
+adoHistCon.Close;
+frmHistory.Close;
+end;
+
+procedure TfrmHistory.BitBtn3Click(Sender: TObject);
+var
+list, cdox, oldF : Textfile;
+s, x :String;
+p : array[0..143] of WideChar;
+sCMD : String;
+rCount : Integer;
+begin
+try
+  AssignFile(list,'./genfiles/printHistory.txt');
+  reWrite(list);
+except
+  ShowMessage('Problem with file');
+end;
+  // Begin HTML FILE output.
+AssignFile(cdox, './genfiles/createdoc.txt');
+Reset(cdox);
+while NOT EoF(cdox) do
+begin
+readLn(cdox,s);
+writeLn(list,s);
+end;
+rCount := 0;
+adoQH.SQL.Clear;
+adoQH.SQL.Add('SELECT * FROM [Disciplinary History]');
+adoQH.Open;
+adoQH.First;
+while NOT adoQH.Eof do
+begin
+  WriteLn(list,'<tr>');
+  WriteLn(list,'<td>' + IntToStr(rCount) + '</td>');
+  WriteLn(list,'<td>' + adoQH['Learner'] + '</td>');
+  WriteLn(list,'<td>' + adoQH['Grade'] + '</td>');
+  WriteLn(list,'<td>' + DateTimeToStr(adoQH['LoadingDate']) + '</td>');
+  WriteLn(list,'<td>' + adoQH['Transgression Type'] + '</td>');
+  WriteLn(list,'<td>' + IntToStr(adoQH['Debit Total']) + '</td>');
+  WriteLn(list,'</tr>');
+  inc(rCount);
+  adoQH.Next;
+end;
+  WriteLn(list,'</table>');
+  WriteLn(list,'</body>');
+  WriteLn(list,'</html>');
+CloseFile(cdox);
+CloseFile(list);
+AssignFile(oldF, './genfiles/printHistory.html');
+Erase(oldF);
+Rename(list, './genfiles/printHistory.html');
+sCmd := Pwidechar('/C start winword ./genfiles/printHistory.html /t"./genfiles/DH.dotx"');
+ShellExecute(application.Handle, nil, 'cmd.exe', PChar(sCmd), nil, SW_SHOW);
+ShowMessage('Succeeded');
 end;
 
 procedure TfrmHistory.Button1Click(Sender: TObject);

@@ -218,9 +218,9 @@ object frmLoadNew: TfrmLoadNew
   end
   object pnlSchedule: TPanel
     Left = 239
-    Top = 236
+    Top = 185
     Width = 265
-    Height = 102
+    Height = 153
     BorderWidth = 3
     BorderStyle = bsSingle
     Color = clWhite
@@ -234,6 +234,13 @@ object frmLoadNew: TfrmLoadNew
       Height = 13
       Caption = 'Pick a time and date'
     end
+    object Label9: TLabel
+      Left = 96
+      Top = 60
+      Width = 53
+      Height = 13
+      Caption = 'Escalate to'
+    end
     object dtpSchedule: TDateTimePicker
       Left = 32
       Top = 33
@@ -245,12 +252,24 @@ object frmLoadNew: TfrmLoadNew
     end
     object btnSchedule: TButton
       Left = 80
-      Top = 60
+      Top = 116
       Width = 75
       Height = 25
       Caption = 'Schedule'
       TabOrder = 1
       OnClick = btnScheduleClick
+    end
+    object escLevel: TComboBox
+      Left = 48
+      Top = 79
+      Width = 145
+      Height = 21
+      TabOrder = 2
+      Visible = False
+      Items.Strings = (
+        'Grade Committee'
+        'Management Team'
+        'Governing Body')
     end
   end
   object adoConNew: TADOConnection

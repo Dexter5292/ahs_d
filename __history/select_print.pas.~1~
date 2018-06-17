@@ -1,0 +1,63 @@
+unit select_print;
+
+interface
+
+uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+  Buttons, ExtCtrls, CheckLst;
+
+type
+  Tsprint = class(TForm)
+    OKBtn: TButton;
+    CancelBtn: TButton;
+    Bevel1: TBevel;
+    printWhat: TCheckListBox;
+    Label1: TLabel;
+    procedure CancelBtnClick(Sender: TObject);
+    function setPrintList: String;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  sprint: Tsprint;
+
+implementation
+
+{$R *.dfm}
+
+procedure Tsprint.CancelBtnClick(Sender: TObject);
+begin
+sprint.Close;
+end;
+
+function Tsprint.setPrintList: String;
+var
+s : String;
+begin
+  if printWhat.Checked[0] then
+  begin
+    s := s + '1';
+  end else
+  begin
+    s := s + '0';
+  end;
+  if printWhat.Checked[1] then
+  begin
+    s := s + '1';
+  end else
+  begin
+    s := s + '0';
+  end;
+  if printWhat.Checked[2] then
+  begin
+    s := s + '1';
+  end else
+  begin
+    s := s + '0';
+  end;
+  result := s;
+end;
+
+end.

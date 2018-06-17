@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, pngimage, DB, ADODB, mainMenu_u;
+  Dialogs, ExtCtrls, StdCtrls, pngimage, DB, ADODB, mainMenu_u, gradeCommittee_u,
+  ManageDetention_u;
 
 type
   TfrmLogin = class(TForm)
@@ -85,6 +86,9 @@ begin
   except
      ShowMessage('Problem connecting to Database, check connection');
   end;
+  frmGradeCommittee.setUser(edtUsername.text);
+  frmMDetention.set_User(edtUsername.text);
+  adoQ.Close;
 
 end;
 

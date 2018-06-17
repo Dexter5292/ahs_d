@@ -11,6 +11,7 @@ object frmHistory: TfrmHistory
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -76,6 +77,30 @@ object frmHistory: TfrmHistory
       ParentDoubleBuffered = False
       TabOrder = 0
       OnClick = BitBtn1Click
+    end
+    object BitBtn2: TBitBtn
+      Left = 643
+      Top = 16
+      Width = 75
+      Height = 25
+      Caption = 'Back'
+      DoubleBuffered = True
+      Kind = bkAll
+      ParentDoubleBuffered = False
+      TabOrder = 1
+      OnClick = BitBtn2Click
+    end
+    object BitBtn3: TBitBtn
+      Left = 105
+      Top = 16
+      Width = 75
+      Height = 25
+      Caption = 'Print'
+      DoubleBuffered = True
+      Kind = bkOK
+      ParentDoubleBuffered = False
+      TabOrder = 2
+      OnClick = BitBtn3Click
     end
   end
   object pnlShowDetail: TPanel

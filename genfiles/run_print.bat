@@ -1,0 +1,1 @@
+start winword C:\"Program Files"\"Affies Discipline"\genfiles\printHistory.html /tC:\"Program Files"\"Affies Discipline"\genfiles\DH.dotx

@@ -1,0 +1,54 @@
+unit ManageDetention_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, DB, ADODB;
+
+type
+  TfrmMDetention = class(TForm)
+    Panel1: TPanel;
+    Label1: TLabel;
+    Label7: TLabel;
+    GroupBox1: TGroupBox;
+    cbSession: TComboBox;
+    adoMdet: TADOConnection;
+    adoQMD: TADOQuery;
+    dsMdet: TDataSource;
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmMDetention: TfrmMDetention;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmMDetention.FormCreate(Sender: TObject);
+var
+I         :   Integer;
+begin
+  adoMdet.ConnectionString := 'Provider=Microsoft.Jet.OLEDB.4.0; Data Source='
+                            + ExtractFilePath(Application.ExeName)
+                            + 'maindb.mdb; Persist Security Info=False';
+  adoMdet.LoginPrompt      := False;
+  adoQMd.Connection        := adoMdet;
+
+  adoQMd.SQL.Clear;
+  adoQMd.SQL.Add('SELECT DISTINCT [ActDate] FROM [ACTION]');
+  adoQMd.SQL.Add('WHERE [Measure] = ''Detention''');
+  adoQMd.Open;
+
+  for I := 0 to adoQMd.RecordCount - 1 do
+    begin
+      cbSession.Items.Add(adoQMd['ActDate']);
+    end;
+end;
+
+end.

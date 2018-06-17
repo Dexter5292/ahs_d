@@ -1,0 +1,74 @@
+object frmMDetention: TfrmMDetention
+  Left = 0
+  Top = 0
+  Caption = 'frmMDetention'
+  ClientHeight = 476
+  ClientWidth = 732
+  Color = clWhite
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 737
+    Height = 73
+    Color = clWhite
+    ParentBackground = False
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 221
+      Top = 10
+      Width = 308
+      Height = 23
+      Caption = 'Manage Existing Detention Lists'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clTeal
+      Font.Height = -19
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label7: TLabel
+      Left = 285
+      Top = 39
+      Width = 174
+      Height = 13
+      Caption = 'Process Disciplinary Measures Taken'
+    end
+  end
+  object GroupBox1: TGroupBox
+    Left = 16
+    Top = 79
+    Width = 193
+    Height = 82
+    Caption = 'Select detention session:  '
+    TabOrder = 1
+    object cbSession: TComboBox
+      Left = 24
+      Top = 32
+      Width = 145
+      Height = 21
+      TabOrder = 0
+    end
+  end
+  object adoMdet: TADOConnection
+    Left = 16
+    Top = 16
+  end
+  object adoQMD: TADOQuery
+    Parameters = <>
+    Left = 64
+    Top = 16
+  end
+  object dsMdet: TDataSource
+    Left = 120
+    Top = 16
+  end
+end

@@ -973,7 +973,7 @@ object frmMain: TfrmMain
   end
   object btnDetention: TBitBtn
     Left = 8
-    Top = 208
+    Top = 322
     Width = 193
     Height = 50
     Caption = 'Manage Detention'
@@ -989,7 +989,7 @@ object frmMain: TfrmMain
   end
   object btnBlackList: TBitBtn
     Left = 207
-    Top = 208
+    Top = 322
     Width = 193
     Height = 50
     Caption = 'Manage Blacklist'
@@ -1005,7 +1005,7 @@ object frmMain: TfrmMain
   end
   object btnGovBod: TBitBtn
     Left = 8
-    Top = 320
+    Top = 266
     Width = 193
     Height = 50
     Caption = 'Governing Body'
@@ -1021,7 +1021,7 @@ object frmMain: TfrmMain
   end
   object btnManTeam: TBitBtn
     Left = 207
-    Top = 264
+    Top = 210
     Width = 193
     Height = 50
     Caption = 'Management Team'
@@ -1037,7 +1037,7 @@ object frmMain: TfrmMain
   end
   object btnGradeCom: TBitBtn
     Left = 8
-    Top = 264
+    Top = 210
     Width = 193
     Height = 50
     Caption = 'Grade Committee'
@@ -1050,10 +1050,11 @@ object frmMain: TfrmMain
     ParentDoubleBuffered = False
     ParentFont = False
     TabOrder = 4
+    OnClick = btnGradeComClick
   end
   object btnPrint: TBitBtn
     Left = 207
-    Top = 320
+    Top = 266
     Width = 193
     Height = 50
     Caption = 'Print Documents'
@@ -1098,6 +1099,7 @@ object frmMain: TfrmMain
     ParentDoubleBuffered = False
     ParentFont = False
     TabOrder = 7
+    OnClick = btnCloseClick
   end
   object btnNew: TBitBtn
     Left = 8

@@ -1,0 +1,161 @@
+unit gradeCommittee_u;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, ADODB, StdCtrls, CheckLst, ExtCtrls, ComCtrls, Buttons, Grids;
+
+type
+  TfrmGradeCommittee = class(TForm)
+    Panel1: TPanel;
+    Label1: TLabel;
+    Label7: TLabel;
+    GroupBox1: TGroupBox;
+    clbLearner: TCheckListBox;
+    adoConGC: TADOConnection;
+    adoQGC: TADOQuery;
+    dsGC: TDataSource;
+    btnSelectAll: TButton;
+    GroupBox2: TGroupBox;
+    cbMeasure: TComboBox;
+    cbDetDate: TGroupBox;
+    cbDateRange: TGroupBox;
+    date1: TDateTimePicker;
+    dateRange1: TDateTimePicker;
+    dateRange2: TDateTimePicker;
+    Label2: TLabel;
+    Label3: TLabel;
+    GroupBox3: TGroupBox;
+    cbPrintCL: TCheckBox;
+    cbPrintLL: TCheckBox;
+    cbNotifications: TCheckBox;
+    btnPreview: TBitBtn;
+    btnOK: TBitBtn;
+    BitBtn1: TBitBtn;
+    sgPreview: TStringGrid;
+    procedure FormCreate(Sender: TObject);
+    procedure btnSelectAllClick(Sender: TObject);
+    procedure cbMeasureChange(Sender: TObject);
+    procedure btnPreviewClick(Sender: TObject);
+    procedure sgPreviewSelectCell(Sender: TObject; ACol, ARow: Integer;
+      var CanSelect: Boolean);
+    procedure btnOKClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmGradeCommittee: TfrmGradeCommittee;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmGradeCommittee.btnOKClick(Sender: TObject);
+begin
+ btnPreview.Click;
+end;
+
+procedure TfrmGradeCommittee.btnPreviewClick(Sender: TObject);
+var
+I      :  Integer;
+OpString    : String;
+begin
+for I := 0 to clbLearner.Items.Count - 1 do
+begin
+  if clbLearner.Checked[I] then
+  begin
+     sgPreview.Cells[0,I] := clbLearner.Items[I];
+     sgPreview.Cells[1,I] := cbMeasure.Text;
+     if cbMeasure.ItemIndex = 0 then
+     begin
+       sgPreview.Cells[2,I] := DateTimeToStr(Trunc(date1.DateTime));
+     end else
+     begin
+       sgPreview.Cells[2,I] := DateTimeToStr(Trunc(dateRange1.DateTime))
+                                + ' - '
+                                + DateTimeToStr(Trunc(dateRange2.DateTime));
+     end;
+     OpString := '';
+     if cbPrintCl.Checked then
+     begin
+       OpString := Opstring + '1';
+     end else
+     begin
+       Opstring := Opstring + '0';
+     end;
+     if cbPrintLL.Checked then
+     begin
+       OpString := Opstring + '1';
+     end else
+     begin
+       Opstring := Opstring + '0';
+     end;
+     if cbNotifications.Checked then
+     begin
+       OpString := Opstring + '1';
+     end else
+     begin
+       Opstring := Opstring + '0';
+     end;
+     sgPreview.Cells[3,I] := OpString;
+     sgPreview.RowCount := sgPreview.RowCount + 1;
+  end;
+end;
+end;
+
+procedure TfrmGradeCommittee.btnSelectAllClick(Sender: TObject);
+begin
+  clbLearner.CheckAll(cbChecked,False,True);
+end;
+
+procedure TfrmGradeCommittee.cbMeasureChange(Sender: TObject);
+begin
+  if cbMeasure.ItemIndex <> 0 then
+  begin
+    cbDateRange.Visible := True;
+    cbDetDate.Visible := False;
+  end else
+  begin
+    cbDateRange.Visible := False;
+    cbDetDate.Visible := True;
+  end;
+end;
+
+procedure TfrmGradeCommittee.FormCreate(Sender: TObject);
+var
+I   : Integer;
+begin
+adoConGC.ConnectionString := 'Provider=MicroSoft.Jet.OLEDB.4.0; Data Source='
+                            + ExtractFilePath(Application.ExeName)
+                            + 'maindb.mdb; Persist Security Info=False';
+adoConGC.LoginPrompt := False;
+adoQGC.Connection := adoConGC;
+adoQGC.SQL.Clear;
+adoQGC.SQL.Add('SELECT DISTINCT [Learner] FROM [Grade Committee]');
+adoQGC.Open;
+for I := 1 to adoQGC.RecordCount do
+begin
+  clbLearner.Items.Add(adoQGC['Learner']);
+  adoQGC.Next;
+end;
+sgPreview.ColCount := 4;
+sgPreview.RowCount := 1;
+// [0,0]..[0,3]
+sgPreview.ColWidths[0] := 175;
+sgPreview.ColWidths[1] := 75;
+sgPreview.ColWidths[2] := 80;
+sgPreview.ColWidths[3] := 30;
+
+end;
+
+procedure TfrmGradeCommittee.sgPreviewSelectCell(Sender: TObject; ACol,
+  ARow: Integer; var CanSelect: Boolean);
+begin
+  ShowMessage(sgPreview.Cells[ACol,ARow]);
+end;
+
+end.

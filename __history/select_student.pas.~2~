@@ -1,0 +1,193 @@
+unit select_student;
+
+interface
+
+uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+  Buttons, ExtCtrls, ComCtrls, DB, ADODB, Dialogs;
+
+type
+  TStudent = Array of String;
+  TSelect_learner = class(TForm)
+    OKBtn: TButton;
+    CancelBtn: TButton;
+    Bevel1: TBevel;
+    cbLearner: TComboBox;
+    Label1: TLabel;
+    rgCon: TRadioGroup;
+    dtpDate: TDateTimePicker;
+    Label2: TLabel;
+    adoCon: TADOConnection;
+    adoQ: TADOQuery;
+    procedure setVStudent(vArr : TStudent);
+    procedure OKBtnClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    vStudent : TStudent;
+    { Public declarations }
+  end;
+
+var
+  Select_learner: TSelect_learner;
+
+implementation
+
+{$R *.dfm}
+
+
+procedure TSelect_learner.OKBtnClick(Sender: TObject);
+var
+I : Integer;
+pw: String;
+begin
+ adoCon.ConnectionString := 'Provider=MicroSoft.Jet.OLEDB.4.0; Data Source='
+                          + ExtractFilePath(Application.ExeName)
+                          + 'maindb.mdb; Persist Security Info=False';
+ adoCon.LoginPrompt      := False;
+ adoQ.Connection         := adoCon;
+
+ case rgCon.ItemIndex of
+ 0: Begin
+    //-------------------------MARK FOR NEW DETENTION-------------------------
+      With adoQ do begin
+          SQL.Clear;
+          SQL.Add('INSERT INTO [Action](Learner, Measure, ActDate, ApprovedBy)');
+          SQL.Add('VALUES(''' + cbLearner.Text +
+          ''',''Detention'',''' + DateTimeToStr(Trunc(dtpDate.Date))
+          + ''',''System'')');
+          ExecSQL;
+      end;
+    I := messagedlg('Continue with antother?', mtConfirmation, [mbYes, mbNo], 0);
+    if I = mrYes then
+      begin
+        cbLearner.Items.Delete(cbLearner.ItemIndex);
+        cbLearner.Text := '';
+      end else
+      begin
+        adoCon.Close;
+        cbLearner.Items.Clear;
+        Select_Learner.Close;
+      end;
+      //-----------------------END OF STATEMENTS-------------------------------
+    end;
+ 1: Begin
+    //------------------------ESCALATE TO GRADE COMMITTEE----------------------
+    With adoQ do begin
+          SQL.Clear;
+          SQL.Add('INSERT INTO [Grade Committee](Learner, ActDate)');
+          SQL.Add('VALUES(''' + cbLearner.Text + ''','''
+          + DateTimeToStr(Trunc(dtpDate.Date + 5)) + ''')');
+          ExecSQL;
+      end;
+    I := messagedlg('Continue with antother?', mtConfirmation, [mbYes, mbNo], 0);
+    if I = mrYes then
+      begin
+        cbLearner.Items.Delete(cbLearner.ItemIndex);
+        cbLearner.Text := '';
+      end else
+      begin
+        adoCon.Close;
+        cbLearner.Items.Clear;
+        Select_Learner.Close;
+      end;
+    //------------------------END OF STATEMENTS--------------------------------
+    end;
+ 2: Begin
+    //------------------------ESCALATE TO MANAGEMENT TEAM----------------------
+        With adoQ do begin
+          SQL.Clear;
+          SQL.Add('INSERT INTO [Management Team](Learner, ActDate)');
+          SQL.Add('VALUES(''' + cbLearner.Text + ''','''
+          + DateTimeToStr(Trunc(dtpDate.Date + 5)) + ''')');
+          ExecSQL;
+      end;
+    I := messagedlg('Continue with antother?', mtConfirmation, [mbYes, mbNo], 0);
+    if I = mrYes then
+      begin
+        cbLearner.Items.Delete(cbLearner.ItemIndex);
+        cbLearner.Text := '';
+      end else
+      begin
+        adoCon.Close;
+        cbLearner.Items.Clear;
+        Select_Learner.Close;
+      end;
+    //------------------------END OF STATEMENTS--------------------------------
+    end;
+ 3: Begin
+    //------------------------ESCALATE TO GOVERNING BODY-----------------------
+    With adoQ do begin
+          SQL.Clear;
+          SQL.Add('INSERT INTO [Governing Body](Learner, ActDate)');
+          SQL.Add('VALUES(''' + cbLearner.Text + ''','''
+          + DateTimeToStr(Trunc(dtpDate.Date + 5)) + ''')');
+          ExecSQL;
+      end;
+    I := messagedlg('Continue with antother?', mtConfirmation, [mbYes, mbNo], 0);
+    if I = mrYes then
+      begin
+        cbLearner.Items.Delete(cbLearner.ItemIndex);
+        cbLearner.Text := '';
+      end else
+      begin
+        adoCon.Close;
+        cbLearner.Items.Clear;
+        Select_Learner.Close;
+      end;
+    //------------------------END OF STATEMENTS--------------------------------
+    end;
+ 4: Begin
+    //-----------------------MARK FOR SUSPENSION-------------------------------
+    pw := InputBox('Principal Password', 'Enter the Password for the Principal','');
+    if pw = 'herculus' then
+    begin
+       With adoQ do begin
+          SQL.Clear;
+          SQL.Add('INSERT INTO [Suspension](Learner, [Start Date], [End Date])');
+          SQL.Add('VALUES(''' + cbLearner.Text + ''','''
+          + DateTimeToStr(Trunc(dtpDate.Date)) + ''','''
+          + DateTimeToStr(Trunc(dtpDate.Date + 5)) + ''')');
+          ExecSQL;
+      end;
+    I := messagedlg('Continue with antother?', mtConfirmation, [mbYes, mbNo], 0);
+    if I = mrYes then
+      begin
+        cbLearner.Items.Delete(cbLearner.ItemIndex);
+        cbLearner.Text := '';
+      end else
+      begin
+        adoCon.Close;
+        cbLearner.Items.Clear;
+        Select_Learner.Close;
+      end;
+    end;
+    //-----------------------END OF STATEMENTS---------------------------------
+    end;
+ 5: Begin
+    //-----------------------MARK FOR IGNORE-----------------------------------
+      I := MessageDlg('Are you sure?', mtConfirmation, [mbYes, mbNo], 0);
+      if I = mrNo then
+      begin
+       // do nothing.
+      end else
+      begin
+      adoCon.Close;
+        select_learner.Close;
+      end;
+    end;
+    //----------------------END OF STATEMENTS----------------------------------
+ end;
+end;
+
+procedure TSelect_learner.setVStudent(vArr: TStudent);
+var
+s : String;
+begin
+ vStudent := vArr;
+ for s in vArr do
+   begin
+     cbLearner.Items.Add(s);
+   end;
+end;
+
+end.

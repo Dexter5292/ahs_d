@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, jpeg, ExtCtrls, StdCtrls, Buttons, loadNew_u, viewHistory_u;
+  Dialogs, jpeg, ExtCtrls, StdCtrls, Buttons, loadNew_u, viewHistory_u,
+  gradeCommittee_u;
 
 type
   TfrmMain = class(TForm)
@@ -21,6 +22,8 @@ type
     btnBlackList: TBitBtn;
     procedure btnNewClick(Sender: TObject);
     procedure btnHistoryClick(Sender: TObject);
+    procedure btnCloseClick(Sender: TObject);
+    procedure btnGradeComClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -33,6 +36,16 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrmMain.btnCloseClick(Sender: TObject);
+begin
+frmMain.Close;
+end;
+
+procedure TfrmMain.btnGradeComClick(Sender: TObject);
+begin
+ frmGradeCommittee.Show;
+end;
 
 procedure TfrmMain.btnHistoryClick(Sender: TObject);
 begin

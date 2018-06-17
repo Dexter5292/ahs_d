@@ -10,7 +10,16 @@
     <Transaction>2018/05/27 21:05:56.705.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\loadNew_u.dfm</Transaction>
     <Transaction>2018/06/02 18:15:05.506.pas,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.pas=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\viewHistory_u.pas</Transaction>
     <Transaction>2018/06/02 18:15:05.506.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\viewHistory_u.dfm</Transaction>
-  </Transactions>  <ProjectSortOrder AutoSort="0" SortType="0">
+    <Transaction>2018/06/10 14:56:47.386.pas,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.pas=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\gradeCommittee_u.pas</Transaction>
+    <Transaction>2018/06/10 14:56:47.386.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\gradeCommittee_u.dfm</Transaction>
+    <Transaction>2018/06/11 20:28:15.993.pas,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\OKCANCL2.pas=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\select_print.pas</Transaction>
+    <Transaction>2018/06/11 20:28:15.993.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\OKCANCL2.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\select_print.dfm</Transaction>
+    <Transaction>2018/06/14 09:28:24.425.pas,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.pas=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\ManageDetention_u.pas</Transaction>
+    <Transaction>2018/06/14 09:28:24.426.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\Unit1.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\ManageDetention_u.dfm</Transaction>
+    <Transaction>2018/06/16 15:55:11.287.pas,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\OKCANCL2.pas=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\select_student.pas</Transaction>
+    <Transaction>2018/06/16 15:55:11.287.dfm,C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\OKCANCL2.dfm=C:\Users\Martin\Desktop\Delphi Projects\Affies\V 2.0\select_student.dfm</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="ahs_d_u.pas"/>
     <File Path="ahs_d_u.dfm"/>
     <File Path="loadNew_u.pas"/>
@@ -19,5 +28,13 @@
     <File Path="mainMenu_u.dfm"/>
     <File Path="viewHistory_u.pas"/>
     <File Path="viewHistory_u.dfm"/>
+    <File Path="gradeCommittee_u.pas"/>
+    <File Path="gradeCommittee_u.dfm"/>
+    <File Path="select_print.pas"/>
+    <File Path="select_print.dfm"/>
+    <File Path="ManageDetention_u.pas"/>
+    <File Path="ManageDetention_u.dfm"/>
+    <File Path="select_student.pas"/>
+    <File Path="select_student.dfm"/>
   </ProjectSortOrder>
 </BorlandProject>
